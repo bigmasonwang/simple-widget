@@ -29,7 +29,7 @@ export default function Home() {
         setMessage("Failed to submit booking. Please try again.");
       }
     } catch (error) {
-      setMessage("An error occurred. Please try again.");
+      setMessage(`An error occurred. Please try again. ${error}`);
     }
   };
 

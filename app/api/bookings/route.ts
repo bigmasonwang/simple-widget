@@ -11,7 +11,7 @@ function getBookings() {
 }
 
 // Helper function to write bookings
-function saveBookings(bookings: any) {
+function saveBookings(bookings: unknown) {
   fs.writeFileSync(DB_PATH, JSON.stringify({ bookings }, null, 2));
 }
 
@@ -21,7 +21,7 @@ export async function GET() {
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to fetch bookings" },
+      { error: `Failed to fetch bookings ${error}` },
       { status: 500 }
     );
   }
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     return NextResponse.json(newBooking);
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to create booking" },
+      { error: `Failed to create booking${error}` },
       { status: 500 }
     );
   }
