@@ -1,25 +1,43 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function Home() {
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
+    name: "",
+    phone: "",
+    email: "",
+    date: "",
   });
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Handle form submission
-    console.log('Form submitted:', formData);
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setMessage("Booking submitted successfully!");
+        setFormData({ name: "", phone: "", email: "", date: "" });
+      } else {
+        setMessage("Failed to submit booking. Please try again.");
+      }
+    } catch (error) {
+      setMessage("An error occurred. Please try again.");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -27,6 +45,15 @@ export default function Home() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md">
         <h1 className="text-2xl font-bold text-center mb-8">Room Booking</h1>
+        {message && (
+          <div
+            className={`p-4 mb-4 rounded ${
+              message.includes("success") ? "bg-green-100" : "bg-red-100"
+            }`}
+          >
+            {message}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-1">
@@ -73,6 +100,21 @@ export default function Home() {
               required
               className="w-full px-3 py-2 border rounded-md"
               placeholder="Enter your email"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="date" className="block text-sm font-medium mb-1">
+              Date
+            </label>
+            <input
+              type="date"
+              id="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border rounded-md"
             />
           </div>
 
